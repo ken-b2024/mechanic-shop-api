@@ -16,7 +16,8 @@ def create_service_ticket():
     
     new_service_ticket = ServiceTicket(customer_id=ticket_data['customer_id'], service_desc=ticket_data['service_desc'])
 
-    for mechanic_id in ticket_data['mechanic_ids']:
+    mechanic_ids = ticket_data.get('mechanic_ids', [])
+    for mechanic_id in mechanic_ids:
         query = select(Mechanic).where(Mechanic.id == mechanic_id)
         mechanic = db.session.execute(query).scalar()
         if mechanic:
@@ -26,6 +27,7 @@ def create_service_ticket():
 
     db.session.add(new_service_ticket)
     db.session.commit()
+    db.session.refresh(new_service_ticket)
 
     return jsonify({"New service ticket has been created successfully": service_ticket_schema.dump(new_service_ticket)}), 201
 

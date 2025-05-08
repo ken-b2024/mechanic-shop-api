@@ -49,4 +49,4 @@ class ServiceTicket(Base):
     customer_id: Mapped[int] = mapped_column(db.ForeignKey('customers.id'))
 
     customers: Mapped['Customer'] = db.relationship(back_populates='service_tickets')
-    mechanics: Mapped[List['Mechanic']] = db.relationship(secondary=service_ticket_mechanics, viewonly=True)
+    mechanics: Mapped[List['Mechanic']] = db.relationship(secondary=service_ticket_mechanics,)
