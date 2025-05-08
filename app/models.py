@@ -27,7 +27,7 @@ class Customer(Base):
     make_model: Mapped[str] = mapped_column(db.String(200), nullable=False)
     VIN: Mapped[str] = mapped_column(db.String(17), nullable=False)
 
-    service_tickets: Mapped[List['ServiceTicket']] = db.relationship(back_populates='customers')
+    service_tickets: Mapped[List['ServiceTicket']] = db.relationship(back_populates='customer')
 
 class Mechanic(Base):
     __tablename__ = 'mechanics'
@@ -48,5 +48,5 @@ class ServiceTicket(Base):
     service_desc: Mapped[str] = mapped_column(db.String(500), nullable=False)
     customer_id: Mapped[int] = mapped_column(db.ForeignKey('customers.id'))
 
-    customers: Mapped['Customer'] = db.relationship(back_populates='service_tickets')
+    customer: Mapped['Customer'] = db.relationship(back_populates='service_tickets')
     mechanics: Mapped[List['Mechanic']] = db.relationship(secondary=service_ticket_mechanics,)

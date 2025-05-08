@@ -1,5 +1,5 @@
 from.import service_tickets_bp
-from.schemas import service_ticket_schema, service_tickets_schema
+from.schemas import service_ticket_schema, return_service_ticket_schema, return_service_tickets_schema
 from flask import request, jsonify
 from marshmallow import ValidationError
 from app.models import db, Mechanic, ServiceTicket
@@ -28,7 +28,7 @@ def create_service_ticket():
     db.session.add(new_service_ticket)
     db.session.commit()
 
-    return jsonify({"New service ticket has been created successfully": service_ticket_schema.dump(new_service_ticket)}), 201
+    return jsonify({"New service ticket has been created successfully": return_service_ticket_schema.dump(new_service_ticket)}), 201
 
 @service_tickets_bp.route("/", methods=['GET'])
 def get_service_tickets():
@@ -36,4 +36,4 @@ def get_service_tickets():
     query = select(ServiceTicket)
     result = db.session.execute(query).scalars().all()
 
-    return jsonify({"Service Tickets": service_tickets_schema.dump(result)}), 200
+    return jsonify({"Service Tickets": return_service_tickets_schema.dump(result)}), 200
