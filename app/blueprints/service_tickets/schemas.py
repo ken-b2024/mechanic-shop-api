@@ -13,11 +13,5 @@ class ServiceTicketSchema(ma.SQLAlchemyAutoSchema):
         model = ServiceTicket
         fields= ("service_desc", "customer_id", "mechanic_ids", "mechanics")
 
-    @post_dump
-    def add_mechanic_ids(self, data, **kwargs):
-        if 'mechanics' in data:
-            data['mechanic_ids'] = [mech['id'] for mech in data['mechanics']]
-        return data
-
 service_ticket_schema = ServiceTicketSchema()
 service_tickets_schema = ServiceTicketSchema(many=True)

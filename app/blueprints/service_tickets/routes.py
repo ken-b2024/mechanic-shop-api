@@ -27,7 +27,6 @@ def create_service_ticket():
 
     db.session.add(new_service_ticket)
     db.session.commit()
-    db.session.refresh(new_service_ticket)
 
     return jsonify({"New service ticket has been created successfully": service_ticket_schema.dump(new_service_ticket)}), 201
 
