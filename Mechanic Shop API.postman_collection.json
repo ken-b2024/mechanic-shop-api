@@ -164,7 +164,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Customers",
+			"name": "Get Mechanics",
 			"request": {
 				"auth": {
 					"type": "noauth"
