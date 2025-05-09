@@ -52,8 +52,9 @@ def update_mechanic(mechanic_id):
 @mechanics_bp.route("/<int:mechanic_id>", methods=['DELETE'])
 def delete_mechanic(mechanic_id):
 
-    query = delete(Mechanic).where(Mechanic.id == mechanic_id)
-    mechanic = db.session.execute(query)
+    query = select(Mechanic).where(Mechanic.id == mechanic_id)
+    mechanic = db.session.execute(query).scalars().first()
 
+    db.session.delete(mechanic)
     db.session.commit()
     return jsonify({"message": f"Successfully deleted mechanic with ID: {mechanic_id}"})

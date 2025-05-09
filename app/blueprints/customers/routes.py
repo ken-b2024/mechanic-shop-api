@@ -4,9 +4,11 @@ from flask import request, jsonify
 from marshmallow import ValidationError
 from app.models import db
 from sqlalchemy import select, delete
+from app.extensions import limiter, cache
 
 
 @customers_bp.route("/", methods=['POST'])
+@limiter.limit('3 per hour')
 def create_customer():
 
     try:
@@ -22,6 +24,8 @@ def create_customer():
     return jsonify({"New customer has been created successfully": customer_schema.dump(new_customer)}),201
 
 @customers_bp.route("/", methods=['GET'])
+@limiter.limit('5 per hour')
+@cache.cached(timeout=300)
 def get_customers():
 
     query = select(Customer)
@@ -29,6 +33,7 @@ def get_customers():
     return jsonify({"Customers": customers_schema.dump(result)}), 200
 
 @customers_bp.route("/<int:customer_id>", methods=['PUT'])
+@limiter.limit('3 per hour')
 def update_customer(customer_id):
 
     query = select(Customer).where(Customer.id == customer_id)
@@ -51,8 +56,9 @@ def update_customer(customer_id):
 @customers_bp.route("/<int:customer_id>", methods=['DELETE'])
 def delete_customer(customer_id):
 
-    query = delete(Customer).where(Customer.id == customer_id)
-    customer = db.session.execute(query)
+    query = select(Customer).where(Customer.id == customer_id)
+    customer = db.session.execute(query).scalars().first()
 
+    db.session.delete(customer)
     db.session.commit()
     return jsonify({"message": f"Successfully deleted customer with ID: {customer_id}"})
