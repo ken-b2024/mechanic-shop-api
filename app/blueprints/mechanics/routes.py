@@ -3,10 +3,40 @@ from.schemas import Mechanic, mechanic_schema, mechanics_schema
 from flask import request, jsonify
 from marshmallow import ValidationError
 from app.models import db
-from sqlalchemy import select, delete
+from sqlalchemy import select
+from.schemas import login_schema
+from app.extensions import cache, limiter
+from app.utils.utils import encode_token, token_required
 
+
+@mechanics_bp.route("/login", methods=['POST'])
+def login():
+
+    try:
+        credentials = login_schema.load(request.json)
+        email = credentials['email']
+        password = credentials['password']
+    except ValidationError as e:
+        return jsonify(e.messages), 400
+    
+    query = select(Mechanic).where(Mechanic.email == email)
+    mechanic = db.session.execute(query).scalars().first()
+
+    if mechanic and mechanic.password == password:
+        token = encode_token(mechanic.id, 'mechanic')
+
+        response = {
+            "status": "success",
+            "message": "successfully logged in.",
+            "token": token
+        }
+
+        return jsonify(response), 200
+    else:
+        return jsonify({"message": "Invalid email or password!"})
 
 @mechanics_bp.route("/", methods=['POST'])
+@limiter.limit('3 per hour')  #No more than 3 accounts should need to be made per hour
 def create_mechanic():
 
     try:
@@ -14,7 +44,7 @@ def create_mechanic():
     except ValidationError as e:
         return jsonify(e.messages), 400
     
-    new_mechanic = Mechanic(name=mechanic_data['name'], email=mechanic_data['email'], phone=mechanic_data['phone'], salary=mechanic_data['salary'])
+    new_mechanic = Mechanic(name=mechanic_data['name'], email=mechanic_data['email'], password=mechanic_data['password'] phone=mechanic_data['phone'], salary=mechanic_data['salary'])
 
     db.session.add(new_mechanic)
     db.session.commit()
@@ -22,6 +52,7 @@ def create_mechanic():
     return jsonify({"New mechanic has been created successfully": mechanic_schema.dump(new_mechanic)}),201
 
 @mechanics_bp.route("/", methods=['GET'])
+@cache.cached(timeout=180) #Caching the GET route because it would be utilized most frequently
 def get_mechanics():
 
     query = select(Mechanic)
@@ -30,6 +61,7 @@ def get_mechanics():
     return jsonify({"Mechanics": mechanics_schema.dump(result)}), 200
 
 @mechanics_bp.route("/<int:mechanic_id>", methods=['PUT'])
+@token_required
 def update_mechanic(mechanic_id):
 
     query = select(Mechanic).where(Mechanic.id == mechanic_id)
@@ -50,6 +82,7 @@ def update_mechanic(mechanic_id):
     return jsonify({"Mechanic has been successfully updated": mechanic_schema.dump(mechanic)}), 200
 
 @mechanics_bp.route("/<int:mechanic_id>", methods=['DELETE'])
+@token_required
 def delete_mechanic(mechanic_id):
 
     query = select(Mechanic).where(Mechanic.id == mechanic_id)

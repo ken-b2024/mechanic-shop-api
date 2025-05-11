@@ -4,9 +4,11 @@ from flask import request, jsonify
 from marshmallow import ValidationError
 from app.models import db, Mechanic, ServiceTicket
 from sqlalchemy import select
+from app.extensions import cache, limiter
 
 
 @service_tickets_bp.route("/", methods=['POST'])
+@limiter.limit('10 per hour')  #The mechanic shop is only able to handle a maximum of 10 new tickets per hour
 def create_service_ticket():
 
     try:
@@ -31,6 +33,7 @@ def create_service_ticket():
     return jsonify({"New service ticket has been created successfully": return_service_ticket_schema.dump(new_service_ticket)}), 201
 
 @service_tickets_bp.route("/", methods=['GET'])
+@cache.cached(timeout=180) #Caching the GET route because it would be utilized most frequently
 def get_service_tickets():
 
     query = select(ServiceTicket)
