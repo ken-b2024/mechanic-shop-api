@@ -44,7 +44,7 @@ def create_mechanic():
     except ValidationError as e:
         return jsonify(e.messages), 400
     
-    new_mechanic = Mechanic(name=mechanic_data['name'], email=mechanic_data['email'], password=mechanic_data['password'] phone=mechanic_data['phone'], salary=mechanic_data['salary'])
+    new_mechanic = Mechanic(name=mechanic_data['name'], email=mechanic_data['email'], password=mechanic_data['password'], phone=mechanic_data['phone'], salary=mechanic_data['salary'])
 
     db.session.add(new_mechanic)
     db.session.commit()

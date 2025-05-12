@@ -11,9 +11,18 @@ class ServiceTicketSchema(ma.SQLAlchemyAutoSchema):
 
     class Meta:
         model = ServiceTicket
-        fields= ("service_desc", "customer_id", "mechanic_ids", "mechanics", "customer")
+        fields= ("id", "service_desc", "customer_id", "mechanic_ids", "mechanics", "customer")
+
+class EditServiceTicketSchema(ma.Schema):
+    add_mechanic_ids = fields.List(fields.Int(), required=True)
+    remove_mechanic_ids = fields.List(fields.Int(), required=True)
+    service_desc = fields.String(required=False)
+
+    class Meta:
+        fields = ('add_mechanic_ids', 'remove_mechanic_ids', 'service_desc')
 
 service_ticket_schema = ServiceTicketSchema()
 service_tickets_schema = ServiceTicketSchema(many=True)
 return_service_ticket_schema = ServiceTicketSchema(exclude=["customer_id"])
 return_service_tickets_schema = ServiceTicketSchema(many=True, exclude=["customer_id"])
+edit_service_ticket_schema = EditServiceTicketSchema()
