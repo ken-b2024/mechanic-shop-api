@@ -2,7 +2,7 @@ from.import service_tickets_bp
 from.schemas import service_ticket_schema, return_service_ticket_schema, return_service_tickets_schema, edit_service_ticket_schema
 from flask import request, jsonify
 from marshmallow import ValidationError
-from app.models import db, Mechanic, ServiceTicket
+from app.models import db, Mechanic, ServiceTicket, Inventory, ServiceTicketItems
 from sqlalchemy import select
 from app.extensions import cache, limiter
 
@@ -74,3 +74,41 @@ def edit_service_ticket(service_ticket_id):
 
     db.session.commit()
     return return_service_ticket_schema.jsonify(service_ticket)
+
+@service_tickets_bp.route("/<int:service_ticket_id>/add-part", methods=['POST'])
+def add_part_to_service_ticket(service_ticket_id):
+
+    data = request.get_json()
+
+    inventory_id = data.get("inventory_id")
+    quantity = data.get("quantity")
+    
+    query = select(ServiceTicket).where(ServiceTicket.id == service_ticket_id)
+    service_ticket = db.session.execute(query).scalars().first()
+
+    if not service_ticket:
+        return jsonify({"error": f"ServiceTicket with id {service_ticket_id} not found"}), 404
+    
+    inventory_query = select(Inventory).where(Inventory.id == inventory_id)
+    inventory_item = db.session.execute(inventory_query).scalars().first()
+
+    if not inventory_item:
+        return jsonify({"error": f"Inventory item with id {inventory_id} not found"}), 404
+    
+    new_item = ServiceTicketItems(
+        quantity=quantity,
+        inventory_id=inventory_id,
+        service_ticket_id=service_ticket_id
+    )
+
+    db.session.add(new_item)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Part added to service ticket successfully",
+        "item": {
+            "inventory_id": inventory_id,
+            "part_name": inventory_item.name,
+            "quantity": quantity
+        }
+    }), 201

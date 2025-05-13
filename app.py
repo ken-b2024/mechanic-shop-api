@@ -7,4 +7,8 @@ with app.app_context():
     # db.drop_all()
     db.create_all()
 
+@app.route('/')
+def home():
+    return "<h1>Welcome to the Mechanic Shop API Database!<h1>"
+
 app.run()

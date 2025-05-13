@@ -52,6 +52,7 @@ class ServiceTicket(Base):
 
     customer: Mapped['Customer'] = db.relationship(back_populates='service_tickets')
     mechanics: Mapped[List['Mechanic']] = db.relationship(secondary=service_ticket_mechanics)
+    service_ticket_items: Mapped[List['ServiceTicketItems']] = db.relationship(back_populates='service_tickets')
 
 class Inventory(Base):
     __tablename__ = 'inventory'
@@ -60,10 +61,15 @@ class Inventory(Base):
     name: Mapped[str] = mapped_column(db.String(150), nullable=False)
     price: Mapped[float] = mapped_column(db.Float(), nullable=False)
 
+    service_ticket_items: Mapped[List['ServiceTicketItems']] = db.relationship(back_populates='inventory')
+
 class ServiceTicketItems(Base):
     __tablename__ = 'service_ticket_items'
     
     id: Mapped[int] = mapped_column(primary_key=True)
     quantity: Mapped[int] = mapped_column(nullable=False)
-    inventory_id: Mapped[int] = mapped_column(db.ForeignKey('inventory.id'))
-    service_ticket_id: Mapped[int] = mapped_column(db.ForeignKey('service_tickets.id'))
+    inventory_id: Mapped[int] = mapped_column(db.ForeignKey('inventory.id'), nullable=False)
+    service_ticket_id: Mapped[int] = mapped_column(db.ForeignKey('service_tickets.id'), nullable=False)
+
+    service_tickets: Mapped['ServiceTicket'] = db.relationship(back_populates='service_ticket_items')
+    inventory: Mapped['Inventory'] = db.relationship(back_populates='service_ticket_items')

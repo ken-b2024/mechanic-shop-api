@@ -17,9 +17,11 @@ class EditServiceTicketSchema(ma.Schema):
     add_mechanic_ids = fields.List(fields.Int(), required=True)
     remove_mechanic_ids = fields.List(fields.Int(), required=True)
     service_desc = fields.String(required=False)
+    
 
     class Meta:
         fields = ('add_mechanic_ids', 'remove_mechanic_ids', 'service_desc')
+
 
 service_ticket_schema = ServiceTicketSchema()
 service_tickets_schema = ServiceTicketSchema(many=True)
