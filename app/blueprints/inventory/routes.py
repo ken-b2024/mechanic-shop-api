@@ -1,4 +1,4 @@
-from.import inventory_bp
+from.import inventory_items_bp
 from.schemas import Inventory, inventory_item_schema, inventory_items_schema
 from flask import request, jsonify
 from marshmallow import ValidationError
@@ -7,7 +7,7 @@ from sqlalchemy import select
 
 
 
-@inventory_bp.route("/", methods=['POST'])
+@inventory_items_bp.route("/", methods=['POST'])
 def create_inventory_item():
 
     try:
@@ -22,7 +22,7 @@ def create_inventory_item():
 
     return jsonify({"New inventory has been created successfully": inventory_item_schema.dump(new_inventory_item)}),201
 
-@inventory_bp.route("/", methods=['GET'])
+@inventory_items_bp.route("/", methods=['GET'])
 def get_inventory_items():
 
     try:
@@ -36,7 +36,7 @@ def get_inventory_items():
         result = db.session.execute(query).scalars().all()
         return jsonify({"Inventory Items": inventory_items_schema.dump(result)}), 200
 
-@inventory_bp.route("/<int:inventory_item_id>", methods=['PUT'])
+@inventory_items_bp.route("/<int:inventory_item_id>", methods=['PUT'])
 def update_inventory(inventory_item_id):
 
     query = select(Inventory).where(Inventory.id == inventory_item_id)
@@ -56,7 +56,7 @@ def update_inventory(inventory_item_id):
     db.session.commit()
     return jsonify({"inventory has been successfully updated": inventory_item_schema.dump(inventory_item)}), 200
 
-@inventory_bp.route("/<int:inventory_item_id>", methods=['DELETE'])
+@inventory_items_bp.route("/<int:inventory_item_id>", methods=['DELETE'])
 def delete_inventory(inventory_item_id):
 
     query = select(Inventory).where(Inventory.id == inventory_item_id)

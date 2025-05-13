@@ -4,7 +4,7 @@ from.extensions import ma, limiter, cache
 from.blueprints.customers import customers_bp
 from.blueprints.mechanics import mechanics_bp
 from.blueprints.service_tickets import service_tickets_bp
-from.blueprints.inventory import inventory_bp
+from.blueprints.inventory import inventory_items_bp
 
 
 def create_app(config_name):
@@ -23,6 +23,6 @@ def create_app(config_name):
 
     app.register_blueprint(service_tickets_bp, url_prefix='/servicetickets')
 
-    app.register_blueprint(inventory_bp, url_prefix='/inventory')
+    app.register_blueprint(inventory_items_bp, url_prefix='/inventoryitems')
 
     return app
