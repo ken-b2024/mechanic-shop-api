@@ -52,3 +52,13 @@ class ServiceTicket(Base):
 
     customer: Mapped['Customer'] = db.relationship(back_populates='service_tickets')
     mechanics: Mapped[List['Mechanic']] = db.relationship(secondary=service_ticket_mechanics,)
+
+class Inventory(Base):
+    __tablename__ = 'inventory'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(db.String(150), nullable=False)
+    price: Mapped[float] = mapped_column(db.Float, nullable=False)
+    quantity: Mapped[int] = mapped_column(nullable=False)
+
+    service_tickets: Mapped[List['ServiceTicket']] = db.relationship(secondary=service_ticket_mechanics,)

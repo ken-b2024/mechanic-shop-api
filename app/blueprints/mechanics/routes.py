@@ -91,3 +91,13 @@ def delete_mechanic(mechanic_id):
     db.session.delete(mechanic)
     db.session.commit()
     return jsonify({"message": f"Successfully deleted mechanic with ID: {mechanic_id}"})
+
+@mechanics_bp.route("/tickets-worked", methods=['GET'])
+def service_tickets_worked():
+
+    query = select(Mechanic)
+    mechanics = db.session.execute(query).scalars().all()
+    
+    mechanics.sort(key=lambda mechanic:len(mechanic.service_tickets), reverse=True)
+
+    return mechanics_schema.jsonify(mechanics)

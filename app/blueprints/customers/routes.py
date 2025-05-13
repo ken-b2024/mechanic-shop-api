@@ -56,9 +56,16 @@ def create_customer():
 @cache.cached(timeout=180)
 def get_customers():
 
-    query = select(Customer)
-    result = db.session.execute(query).scalars().all()
-    return jsonify({"Customers": customers_schema.dump(result)}), 200
+    try:
+        page = int(request.args.get('page'))
+        per_page = int(request.args.get('per_page'))
+        query = select(Customer)
+        customers = db.paginate(query, page=page, per_page=per_page)
+        return customers_schema.jsonify(customers), 200
+    except:
+        query = select(Customer)
+        result = db.session.execute(query).scalars().all()
+        return jsonify({"Customers": customers_schema.dump(result)}), 200
 
 @customers_bp.route("/my-tickets", methods=['GET'])
 @token_required

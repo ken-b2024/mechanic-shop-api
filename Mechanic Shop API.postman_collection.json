@@ -38,6 +38,42 @@
 			"response": []
 		},
 		{
+			"name": "Create Customer Login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"dking@email.com\",\r\n    \"password\": \"Dyl@n4321!\"\r\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/customers/login",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"customers",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get Customers",
 			"request": {
 				"auth": {
@@ -160,6 +196,14 @@
 						"mechanics"
 					]
 				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Mechanic Login",
+			"request": {
+				"method": "GET",
+				"header": []
 			},
 			"response": []
 		},
@@ -305,6 +349,22 @@
 						"servicetickets"
 					]
 				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Tickets By Customer ID",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Update Service Ticket",
+			"request": {
+				"method": "GET",
+				"header": []
 			},
 			"response": []
 		}
