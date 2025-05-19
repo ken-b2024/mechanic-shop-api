@@ -26,7 +26,11 @@ def token_required(f):
         if 'Authorization'in request.headers:
             print("Authorization Header:", request.headers['Authorization'])
 
-            token = request.headers['Authorization'].split()[1]
+            token = request.headers['Authorization'].split()
+            if len(token) != 2 or token[0].lower() != 'bearer':
+                return jsonify({"message": "Invalid Authorization header format"}), 400
+
+            token = token[1]
 
             if not token:
                 return jsonify({"message": "missing token"}), 400
@@ -42,7 +46,7 @@ def token_required(f):
                 print("JWTError:", str(e))
                 return jsonify({"message": "Invalid token"}), 400
 
-            return f(user_id, role, *args, **kwargs)
+            return f(*args, user_id=user_id, role=role, **kwargs)
         else:
             return jsonify({"message": "You must be logged in to access this resource."}), 400
     

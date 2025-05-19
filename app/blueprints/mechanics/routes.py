@@ -31,6 +31,7 @@ def login():
             "token": token
         }
 
+        print("Raw token:", token)
         return jsonify(response), 200
     else:
         return jsonify({"message": "Invalid email or password!"})
@@ -60,11 +61,11 @@ def get_mechanics():
 
     return jsonify({"Mechanics": mechanics_schema.dump(result)}), 200
 
-@mechanics_bp.route("/<int:mechanic_id>", methods=['PUT'])
+@mechanics_bp.route("/", methods=['PUT'])
 @token_required
-def update_mechanic(mechanic_id):
+def update_mechanic(user_id, role):
 
-    query = select(Mechanic).where(Mechanic.id == mechanic_id)
+    query = select(Mechanic).where(Mechanic.id == user_id)
     mechanic = db.session.execute(query).scalars().first()
 
     if mechanic == None:
@@ -81,7 +82,7 @@ def update_mechanic(mechanic_id):
     db.session.commit()
     return jsonify({"Mechanic has been successfully updated": mechanic_schema.dump(mechanic)}), 200
 
-@mechanics_bp.route("/<int:mechanic_id>", methods=['DELETE'])
+@mechanics_bp.route("/", methods=['DELETE'])
 @token_required
 def delete_mechanic(mechanic_id):
 
@@ -90,7 +91,7 @@ def delete_mechanic(mechanic_id):
 
     db.session.delete(mechanic)
     db.session.commit()
-    return jsonify({"message": f"Successfully deleted mechanic with ID: {mechanic_id}"})
+    return jsonify({"message": f"Successfully deleted mechanic with ID: {mechanic_id}"}), 200
 
 @mechanics_bp.route("/tickets-worked", methods=['GET'])
 def service_tickets_worked():
@@ -100,4 +101,4 @@ def service_tickets_worked():
     
     mechanics.sort(key=lambda mechanic:len(mechanic.service_tickets), reverse=True)
 
-    return mechanics_schema.jsonify(mechanics)
+    return mechanics_schema.jsonify(mechanics), 200

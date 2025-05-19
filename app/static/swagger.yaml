@@ -1,0 +1,533 @@
+swagger: '2.0'
+info:
+  title: "Auto Shop API"
+  description: "This is an API that defines and routes critical information for a mecahnic shop"
+  version: "1.0.0"
+host: "127.0.0.1:5000"
+schemes:
+  - "http"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+
+securityDefinitions:
+  bearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+
+paths: 
+  /customers/login:
+    post:
+      tags:
+        - Customers
+      summary: "Login endpoint, (generates token)"
+      description: "Validates member credentials, generates and returns a member-specific token."
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Login Credentials"
+          required: true
+          schema:
+            $ref: "#/definitions/CustomerLoginCredentials"
+      responses:
+        200:
+          description: "successfully logged in"
+          schema:
+            $ref: "#/definitions/CustomerLoginResponse"
+
+
+  /customers:
+    post:
+      tags:
+        - Customers
+      summary: "Endpoint to create/register a new customer"
+      description: "Endpoint to create a new customer in our Mecahnic Shop system, emails must be unique."
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "account creation requirements"
+          required: true
+          schema:
+            $ref: "#/definitions/CreateCustomerPayload"
+      responses:
+        201:
+          description: "New customer has been created successfully"
+          schema:
+            $ref: "#/definitions/CreateCustomerResponse"
+          examples:
+            application/json:
+              id: 1
+              name: John Doe
+              email: jd@email.com
+              password: Jd2468!
+              phone: 678-258-9461
+              make_model: Nissan Altima
+              VIN: 1N4AL3AP9GC123456
+
+    get:
+      tags:
+        - Customers
+      summary: "Endpoint to retrieve all customers"
+      description: "Endpoint that returns an array of all customer objects"
+      responses:
+        200:
+          description: "Customers retrieved successfully"
+          schema:
+            $ref: "#/definitions/GetCustomers"
+
+    put:
+      tags:
+        - Customers
+      summary: "Endpoint to update a customer"
+      description: "Updates customer information. No authentication is required"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "information required to update a customer"
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateCustomerPayload"
+      responses:
+        200:
+          description: "successfully udpated customer"
+          schema:
+            $ref: "#/definitions/UpdateCustomerResponse"
+          examples:
+            application/json:
+              id: 1
+              name: John Doe
+              email: jd@email.com
+              password: J0hn1sKing!
+              phone: 789-101-1121
+              make_model: GMC Sierra 2500
+              VIN: 1GT12UEY1KF123456
+
+    delete:
+      tags:
+        - Customers
+      summary: "endpoint to delete customer"
+      description: "Route receives the customer ID to locate the details and remove them"
+      security:
+       - bearerAuth: []
+      responses:
+        200:
+          description: "Customer successfully deleted"
+          schema:
+            $ref: "#/definitions/DeleteCustomer"
+          examples:
+            application/json:
+              message: "Successfully deleted customer with ID: <customer_id>"
+
+
+  /customers/my-tickets:
+    get:
+      tags:
+        - Customers
+      summary: "Endpoint for Customers to view their service tickets"
+      description: "Returns all of the service tickets assigned to a specific customer id. Requires authentication via JWT"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Customer profile loaded successfully"
+          schema:
+            $ref: "#/definitions/GetMyTickets"
+
+
+  /mechanics/login:
+    post:
+      tags:
+        - Mechanics
+      summary: "Login endpoint for mechanics, (generates token)"
+      description: "Validates mechanic credentials, generates and returns a member-specific token."
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Login Credentials"
+          required: true
+          schema:
+            $ref: "#/definitions/MechanicLoginCredentials"
+      responses:
+        200:
+          description: "successfully logged in"
+          schema:
+            $ref: "#/definitions/MechanicLoginResponse"
+
+
+  /mechanics:
+    post:
+      tags:
+        - Mechanics
+      summary: "Endpoint to create/register a new mechanic"
+      description: "Endpoint to create a new mechanic in our Auto Shop system, emails must be unique."
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "parameters needed for account creation"
+          required: true
+          schema:
+            $ref: "#/definitions/CreateMechanicPayload"
+      responses:
+        201:
+          description: "New mechanic has been created successfully"
+          schema:
+            $ref: "#/definitions/CreateMechanicResponse"
+          examples:
+            application/json:
+              id: 1
+              name: Kevin Smith
+              email: k_smith@email.com
+              password: K3v1n!
+              phone: 678-481-9137
+              salary: 55000.0
+
+    get:
+      tags:
+        - Mechanics
+      summary: "Endpoint to retrieve all mechanics"
+      description: "Endpoint that returns an array of all mechanic objects"
+      responses:
+          200:
+            description: "Mechanics retrieved successfully"
+            schema:
+              $ref: "#/definitions/GetMechanics"
+
+    put:
+      tags:
+        - Mechanics
+      summary: "Endpoint to update a mechanic"
+      description: "Updates mechanic information. Authentication is required"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "information required to update a customer"
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateMechanicPayload"
+      responses:
+        200:
+          description: "successfully udpated mechanic"
+          schema:
+            $ref: "#/definitions/UpdateMechanicPayload"
+          examples:
+            application/json:
+              id: 1
+              name: Brian Green
+              email: b_green@email.com
+              password: BG4321!
+              phone: 123-654-8970
+              salary: 60000.0
+
+    delete:
+      tags:
+        - Mechanics
+      summary: "endpoint to delete mechanic"
+      description: "Route receives the mechanic ID to locate the details and remove them. Authentication is required"
+      security:
+       - bearerAuth: []
+      responses:
+        200:
+          description: "Mechanic successfully deleted"
+          schema:
+            $ref: "#/definitions/DeleteMechanic"
+          examples:
+            application/json:
+              message: "Successfully deleted mechanic with ID: <customer_id>"
+
+  
+  /mechanics/tickets-worked:
+    get:
+      tags:
+        - Mechanics
+      summary: "Endpoint for mechanics in order of most tickets worked"
+      description: "Displays all of the mechanics and calculates all tickets worked, highest count first."
+      responses:
+        200:
+          description: "Tickets per mechanic successfully displayed"
+          schema:
+            $ref: "#/definitions/GetTicketsWorked"
+
+
+definitions: 
+  CustomerLoginCredentials:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+      
+    required:
+      - email
+      - password
+    
+  CustomerLoginResponse:
+    type: "object"
+    properties:
+      token:
+        type: "string"
+      message:
+        type: "string"
+      status:
+        type: "string"
+
+
+  CreateCustomerPayload:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      phone:
+        type: "string"
+      make_model:
+        type: "string"
+      VIN:
+        type: "string"
+
+      required:
+        - name
+        - email
+        - password
+        - phone
+        - make_model
+        - VIN
+      examples:
+        id: 1
+        name: John Doe
+        email: jd@email.com
+        password: J0hn1sKing!
+        phone: 789-101-1121
+        make_model: GMC Sierra 2500
+        VIN: 1GT12UEY1KF123456
+
+  CreateCustomerResponse:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      phone:
+        type: "string"
+      make_model:
+        type: "string"
+      VIN:
+        type: "string"
+
+
+  GetCustomers:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+        name:
+          type: "string"
+        email:
+          type: "string"
+        password:
+          type: "string"
+        make_model:
+          type: "string"
+        VIN:
+          type: "string"
+
+
+  GetMyTickets:
+    type: "array"
+    items:
+      type: "object"
+
+
+  UpdateCustomerPayload:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      phone:
+        type: "string"
+      make_model:
+        type: "string"
+      VIN:
+        type: "string"
+
+    required:
+      - name
+      - email
+      - password
+      - phone
+      - make_model
+      - VIN
+
+  UpdateCustomerResponse:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      phone:
+        type: "string"
+      make_model:
+        type: "string"
+      VIN:
+        type: "string"
+
+
+  DeleteCustomer:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+
+
+  MechanicLoginCredentials:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+
+    required:
+       - email
+       - password
+
+  MechanicLoginResponse:
+    type: "object"
+    properties:
+      token:
+        type: "string"
+      message:
+        type: "string"
+      status:
+        type: "string"
+
+
+  CreateMechanicPayload:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      phone:
+        type: "string"
+      salary:
+        type: "number"
+        format: "float"
+    required:
+      - name
+      - email
+      - password
+      - salary
+
+  CreateMechanicResponse:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      phone:
+        type: "string"
+      salary:
+        type: "number"
+        format: "float"
+
+
+  GetMechanics:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        email:
+          type: "string"
+        password:
+          type: "string"
+        salary:
+          type: "float"
+
+
+  UpdateMechanicPayload:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      phone:
+        type: "string"
+      salary:
+        type: "number"
+        format: "float"
+
+    required:
+      - name
+      - email
+      - password
+      - phone
+      - salary
+
+  UpdateMechanicResponse:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      phone:
+        type: "string"
+      salary:
+        type: "number"
+        format: "float"
+     
+
+  DeleteMechanic:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+
+
+  GetTicketsWorked:
+    type: "array"
+    items:
+      type: "object"
+
+

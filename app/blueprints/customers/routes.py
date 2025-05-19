@@ -69,9 +69,11 @@ def get_customers():
 
 @customers_bp.route("/my-tickets", methods=['GET'])
 @token_required
-def get_customer_tickets(customer_id):
+def get_customer_tickets(*args, **kwargs):
+    user_id = kwargs.get('user_id')
+    role = kwargs.get('role')
 
-    query = select(ServiceTicket).where(ServiceTicket.customer_id == customer_id)
+    query = select(ServiceTicket).where(ServiceTicket.customer_id == user_id)
     tickets = db.session.execute(query).scalars().all()
 
     return jsonify({"Tickets": return_service_tickets_schema.dump(tickets)}), 200
