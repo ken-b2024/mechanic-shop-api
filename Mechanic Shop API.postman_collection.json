@@ -112,6 +112,46 @@
 					"response": []
 				},
 				{
+					"name": "Get Tickets By Customer ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDY5NjM4NDQsImlhdCI6MTc0Njk2MDI0NCwic3ViIjoiMyJ9.zZUO9Ej4cd1cp_18aoNys3_eFHsEhoUTWR8oMCmArYw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customer_id\": \"2\",\r\n    \"service_desc\": \"Oil change\"\r\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/customers/my-tickets",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"customers",
+								"my-tickets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Update Customers",
 					"request": {
 						"auth": {
@@ -412,46 +452,6 @@
 							"port": "5000",
 							"path": [
 								"servicetickets"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Tickets By Customer ID",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDY5NjM4NDQsImlhdCI6MTc0Njk2MDI0NCwic3ViIjoiMyJ9.zZUO9Ej4cd1cp_18aoNys3_eFHsEhoUTWR8oMCmArYw",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"customer_id\": \"2\",\r\n    \"service_desc\": \"Oil change\"\r\n}"
-						},
-						"url": {
-							"raw": "http://127.0.0.1:5000/customers/my-tickets",
-							"protocol": "http",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "5000",
-							"path": [
-								"customers",
-								"my-tickets"
 							]
 						}
 					},

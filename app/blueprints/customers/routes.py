@@ -33,7 +33,7 @@ def login():
 
         return jsonify(response), 200
     else:
-        return jsonify({"message": "Invalid email or password!"})
+        return jsonify({"message": "Invalid email or password!"}), 400
 
 @customers_bp.route("/", methods=['POST'])
 @limiter.limit('3 per hour')
@@ -68,7 +68,6 @@ def get_customers():
         return jsonify({"Customers": customers_schema.dump(result)}), 200
 
 @customers_bp.route("/my-tickets", methods=['GET'])
-@token_required
 def get_customer_tickets(*args, **kwargs):
     user_id = kwargs.get('user_id')
     role = kwargs.get('role')
@@ -78,11 +77,12 @@ def get_customer_tickets(*args, **kwargs):
 
     return jsonify({"Tickets": return_service_tickets_schema.dump(tickets)}), 200
 
-@customers_bp.route("/<int:customer_id>", methods=['PUT'])
+@customers_bp.route("/", methods=['PUT'])
+@token_required
 @limiter.limit('3 per hour')
-def update_customer(customer_id):
+def update_customer(user_id, role):
 
-    query = select(Customer).where(Customer.id == customer_id)
+    query = select(Customer).where(Customer.id == user_id)
     customer = db.session.execute(query).scalars().first()
 
     if customer == None:
@@ -101,11 +101,11 @@ def update_customer(customer_id):
 
 @customers_bp.route("/", methods=['DELETE'])
 @token_required
-def delete_customer(customer_id):
+def delete_customer(user_id, role):
 
-    query = select(Customer).where(Customer.id == customer_id)
+    query = select(Customer).where(Customer.id == user_id)
     customer = db.session.execute(query).scalars().first()
 
     db.session.delete(customer)
     db.session.commit()
-    return jsonify({"message": f"Successfully deleted customer with ID: {customer_id}"})
+    return jsonify({"message": f"Successfully deleted customer with ID: {user_id}"})

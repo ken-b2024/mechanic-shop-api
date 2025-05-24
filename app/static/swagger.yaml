@@ -252,6 +252,161 @@ paths:
             $ref: "#/definitions/GetTicketsWorked"
 
 
+  /servicetickets:
+    post:
+      tags:
+        - Service Tickets
+      summary: "Endpoint to create service ticket"
+      description: "Endpoint displays customer and assigned mechanic information and a brief decription of the service"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "parameters needed for service ticket creation"
+          required: true
+          schema:
+            $ref: "#/definitions/CreateServiceTicketPayload"
+      responses:
+        201:
+          description: "Service ticket has been created successfully"
+          schema:
+            $ref: "#/definitions/CreateServiceTicketResponse"
+
+    get:
+      tags:
+        - Service Tickets
+      summary: "Endpoint to retrieve all service tickets"
+      description: "Endpoint that returns an array of all service ticket objects"
+      responses:
+        200:
+          description: "Service tickets retrieved successfully"
+          schema:
+            $ref: "#/definitions/GetServiceTickets"
+
+
+  /servicetickets/{service_ticket_id}:
+    put:
+      tags:
+        - Service Tickets
+      summary: "Endpoint to update a service ticket"
+      description: "Updates service ticket information. No authentication is required"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "information required to update a service ticket"
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateServiceTicketPayload"
+      responses:
+        200:
+          description: "successfully udpated service ticket"
+          schema:
+            $ref: "#/definitions/UpdateServiceTicketResponse"
+
+
+  /servicetickets/{service_ticket_id}/add-part:
+    post:
+      tags:
+        - Service Tickets
+      summary: "Endpoint to add parts to a service ticket"
+      description: "Route takes an id from inventory and appends it to the service ticket id passed in the route"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "parameters needed for account creation"
+          required: true
+          schema:
+            $ref: "#/definitions/AddItemToServiceTicketPayload"
+      responses:
+        201:
+          description: "Item has been successfully added to service ticket"
+          schema:
+            $ref: "#/definitions/AddItemToServiceTicketResponse"
+
+
+  /inventoryitems:
+    post:
+      tags:
+        - Inventory
+      summary: "Endpoint for creating an inventory item"
+      description: "Takes in a name and price of item and returns info with an id"
+      parameters:
+        - in body:
+          name: "body"
+          description: "parameters needed for inventory item creation"
+          required: true
+          schema:
+            $ref: "#/definitions/CreateInventoryPayload"
+      responses:
+        200:
+          description: "Inventory item successfully created"
+          schema:
+            $ref: "#/definitions/CreateInventoryResponse"
+          examples:
+            application/json:
+              id: 1
+              name: Car battery
+              price: 179.99
+
+    get:
+      tags:
+        - Inventory
+      summary: "Endpoint to retrieve inventory items"
+      description: "The endpoint returnsan array of all item objects"
+      responses:
+        200:
+          description: "Inventory items retrieved successfully"
+          schema:
+            $ref: "#/definitions/GetInventory"
+
+
+  /inventoryitems/{inventory_item_id}:
+    put:
+      tags:
+        - Inventory
+      summary: "Endpoint to update inventory item"
+      description: "Endpoint requires name and price of invemtory item and return the info once those parameters have been altered"
+      parameters:
+        - in: "path"
+          name: "inventory_item_id"
+          required: true
+          type: integer
+      
+        - in: "body"
+          name: "body"
+          description: "information required to update an inventory item"
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateInventoryPayload"
+      responses:
+        200:
+          description: "successfully udpated service ticket"
+          schema:
+            $ref: "#/definitions/UpdateInventoryResponse"
+
+    delete:
+      tags:
+        - Inventory
+      summary: "endpoint to delete inventory item"
+      description: "Route receives the inventory item ID to locate the details and remove them"
+      parameters:
+        - in: path
+          name: inventory_item_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "inventory item successfully deleted"
+          content:
+            application/json:
+              schema:
+                $ref: "#/definitions/DeleteInventory"
+              examples:
+                application/json:
+                  message: "Successfully deleted inventory item with ID: <inventory_item_id>"
+
+
+
 definitions: 
   CustomerLoginCredentials:
     type: "object"
@@ -531,3 +686,173 @@ definitions:
       type: "object"
 
 
+  CreateServiceTicketPayload:
+    type: "object"
+    properties:
+      customer_id:
+        type: "integer"
+      service_desc:
+        type: "string"
+      mechanic_ids:
+        type: "array"
+        items:
+          type: "integer"
+
+    required:
+      - customer_id
+      - service_desc
+      - mechanic_ids
+
+  CreateServiceTicketResponse:
+    type: array
+    items:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+        service_desc:
+          type: "string"
+        customer:
+          type: "object"
+        mechanics:
+          type: "object"
+
+
+  GetServiceTickets:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+        service_desc:
+          type: "string"
+        customer:
+          type: "object"
+        mechanics:
+          type: "object"
+
+
+  UpdateServiceTicketPayload:
+    type: "object"
+    properties:
+      customer_id:
+        type: "integer"
+      service_desc:
+        type: "string"
+      mechanic_ids:
+        type: "array"
+        items:
+          type: "integer"
+
+    required:
+      - customer_id
+      - service_desc
+      - mechanic_ids
+
+  UpdateServiceTicketResponse:
+    type: array
+    items:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+        service_desc:
+          type: "string"
+        customer:
+          type: "object"
+        mechanics:
+          type: "object"
+ 
+
+  AddItemToServiceTicketPayload:
+    properties:
+      quantity:
+        type: "integer"
+      inventory_id:
+        type: "integer"
+
+    required:
+      - quantity
+      - inventory_id
+
+  AddItemToServiceTicketResponse:
+    type: "object"
+    properties:
+      inventory_id:
+        type: "integer"
+      part_name:
+        type: "string"
+      quantity:
+        type: "integer"
+        
+
+  CreateInventoryPayload:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      price:
+        type: "number"
+        format: "float"
+
+    required:
+      - name
+      - price
+
+  CreateInventoryResponse:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      price:
+        type: "number"
+        format: "float"
+
+
+  GetInventory:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        id:
+         type: "integer"
+        name:
+          type: "string"
+        price:
+          type: "number"
+          format: "float"
+
+
+  UpdateInventoryPayload:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      price:
+        type: "number"
+        format: "float"
+
+    required:
+      - name
+      - price
+
+  UpdateInventoryResponse:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      price:
+        type: "number"
+        format: "float"
+
+
+  DeleteInventory:
+    type: "object"
+    properties:
+      message:
+        type: "string"

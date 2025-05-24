@@ -1,10 +1,11 @@
 from app import create_app
 from app.models import db, Customer
+from app.utils.utils import encode_token
 import unittest
 
 
 class TestCustomer(unittest.TestCase):
-    
+
     def setUp(self):
         self.app = create_app("TestingConfig")
         self.customer = Customer(name='test_user', email='testuser@email.com', password='test321', phone='123-456-7890', make_model='Lexus RX 350', VIN='2T2HZMDA1PC123456')
@@ -68,4 +69,50 @@ class TestCustomer(unittest.TestCase):
         response = self.client.post('/customers/login', json=credentials)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json['message'], 'Invalid email or password!')
+
+
+    def test_update_customer(self):
+        udpate_payload = {
+            "name": "",
+            "email": "",
+           	"password": "",
+            "phone": "",
+            "make_model": "",
+            "VIN": "2T2HZMDA1PC123789"
+        }
+
+        headers = {'Authorization': 'Bearer ' + self.test_login_customer()}
+
+        response = self.client.put('/customers/', json=udpate_payload, headers=headers)
+
+        self.assertEqual(response.status_code, 200)
+        updated_customer = response.json["Customer has been successfully updated"]
+        self.assertEqual(updated_customer['VIN'], '2T2HZMDA1PC123789')
+    
+    
+    def test_invalid_update(self):
+        udpate_payload = {
+            "name": "",
+            "email": "",
+           	"password": "",
+            "phone": "",
+            "make_model": ""
+        }
+
+        headers = {'Authorization': 'Bearer ' + self.test_login_customer()}
+
+        response = self.client.put('/customers/', json=udpate_payload, headers=headers)
+
+        self.assertEqual(response.status_code, 400)
+
+
+    def test_delete_customer(self):
+        
+        headers = {'Authorization': 'Bearer ' + self.test_login_customer()}
+
+        response = self.client.delete('/customers/', headers=headers)
+
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['message'], 'Successfully deleted customer with ID: 1')
 

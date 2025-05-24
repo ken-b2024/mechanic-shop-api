@@ -42,7 +42,7 @@ def get_service_tickets():
     return jsonify({"Service Tickets": return_service_tickets_schema.dump(result)}), 200
 
 @service_tickets_bp.route("/<int:service_ticket_id>", methods=['PUT'])
-def edit_service_ticket(service_ticket_id):
+def update_service_ticket(service_ticket_id):
 
     try:
         ticket_edits = edit_service_ticket_schema.load(request.json)

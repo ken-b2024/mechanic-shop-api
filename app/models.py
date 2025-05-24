@@ -40,7 +40,7 @@ class Mechanic(Base):
     phone: Mapped[str] = mapped_column(db.String(12), nullable=False)
     salary: Mapped[float] = mapped_column(db.Float, nullable=False)
 
-    service_tickets: Mapped[List['ServiceTicket']] = db.relationship(secondary=service_ticket_mechanics)
+    service_tickets: Mapped[List['ServiceTicket']] = db.relationship(secondary=service_ticket_mechanics, back_populates='mechanics')
     
 class ServiceTicket(Base):
     __tablename__ = 'service_tickets'
@@ -51,7 +51,7 @@ class ServiceTicket(Base):
     customer_id: Mapped[int] = mapped_column(db.ForeignKey('customers.id'))
 
     customer: Mapped['Customer'] = db.relationship(back_populates='service_tickets')
-    mechanics: Mapped[List['Mechanic']] = db.relationship(secondary=service_ticket_mechanics)
+    mechanics: Mapped[List['Mechanic']] = db.relationship(secondary=service_ticket_mechanics, back_populates='service_tickets')
     service_ticket_items: Mapped[List['ServiceTicketItems']] = db.relationship(back_populates='service_tickets')
 
 class Inventory(Base):
