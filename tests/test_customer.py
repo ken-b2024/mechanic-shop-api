@@ -106,8 +106,15 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
 
 
+    def test_retrieve_customers(self):
+
+        response = self.client.get('/customers/')
+
+        self.assertEqual(response.status_code, 200)
+
+
+
     def test_delete_customer(self):
-        
         headers = {'Authorization': 'Bearer ' + self.test_login_customer()}
 
         response = self.client.delete('/customers/', headers=headers)
