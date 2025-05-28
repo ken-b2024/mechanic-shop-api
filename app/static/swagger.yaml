@@ -3,9 +3,9 @@ info:
   title: "Auto Shop API"
   description: "This is an API that defines and routes critical information for a mecahnic shop"
   version: "1.0.0"
-host: "127.0.0.1:5000"
+host: "backend-advanced-api-project.onrender.com"
 schemes:
-  - "http"
+  - "https"
 consumes:
   - "application/json"
 produces:
