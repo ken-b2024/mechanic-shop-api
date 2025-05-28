@@ -1,7 +1,7 @@
 from app import create_app
 from app.models import db
 
-app = create_app('DevelopmentConfig')
+app = create_app('ProductionConfig')
 
 with app.app_context():
     # db.drop_all()
@@ -11,4 +11,3 @@ with app.app_context():
 def home():
     return "<h1>Welcome to the Mechanic Shop API Database!<h1>"
 
-app.run()

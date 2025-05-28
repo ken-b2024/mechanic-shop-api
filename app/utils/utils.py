@@ -3,9 +3,10 @@ from jose.exceptions import ExpiredSignatureError, JWTError
 from jose import jwt
 from functools import wraps
 from flask import request, jsonify
+import os
 
 
-SECRET_KEY = "secretloginkey"
+SECRET_KEY = os.environ.get('SECRET_KEY') or 'secretloginkey'
 
 def encode_token(user_id, role):
     payload = {
