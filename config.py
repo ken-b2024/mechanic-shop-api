@@ -11,4 +11,4 @@ class TestingConfig:
 
 
 class ProductionConfig:
-    pass
+    SQLALCHEMY_DATABASE_URI = 
