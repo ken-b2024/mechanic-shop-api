@@ -1,34 +1,37 @@
-# Auto Shop API
+Auto Shop API
 
 This is a RESTful Flask API for managing a mechanic shop, including customers, mechanics, inventory, and service tickets.
 
----
+🚀 Features
 
-## 🚀 Features
+Customer and mechanic registration and login with JWT tokens
 
-* Customer and mechanic registration and login with JWT tokens
-* Service ticket creation, assignment to mechanics, and part association
-* Inventory item CRUD
-* Role-based authorization using decorators
-* Rate limiting using Flask-Limiter
-* Caching for frequently accessed endpoints
-* Swagger UI documentation
-* Pagination on selected endpoints (e.g., customers, inventory)
+Service ticket creation, assignment to mechanics, and part association
 
----
+Inventory item CRUD
 
-## 🛠️ Tech Stack
+Role-based authorization using decorators
 
-* **Backend**: Flask, SQLAlchemy, Marshmallow
-* **Database**: MySQL (Dev), SQLite (Testing)
-* **Caching & Rate Limiting**: Flask-Caching, Flask-Limiter
-* **API Documentation**: Swagger UI
+Rate limiting using Flask-Limiter
 
----
+Caching for frequently accessed endpoints
 
-## 🧱 Project Structure
+Swagger UI documentation
 
-```
+Pagination on selected endpoints (e.g., customers, inventory)
+
+🛠️ Tech Stack
+
+Backend: Flask, SQLAlchemy, Marshmallow
+
+Database: MySQL (Dev), SQLite (Testing)
+
+Caching & Rate Limiting: Flask-Caching, Flask-Limiter
+
+API Documentation: Swagger UI
+
+🧱 Project Structure
+
 app/
 ├── blueprints/
 │   ├── customers.py
@@ -42,174 +45,171 @@ app/
 │   └── utils.py
 config.py
 run.py
-```
 
----
+🔧 Setup
 
-## 🔧 Setup
+1. Clone the Repository
 
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/yourusername/mechanic-shop-api.git
+git clone https://github.com/ken-b2024/mechanic-shop-api.git
 cd mechanic-shop-api
-```
 
-### 2. Create and Activate a Virtual Environment
+2. Create and Activate a Virtual Environment
 
-```bash
 python -m venv venv
 source venv/bin/activate  # on Windows use `venv\Scripts\activate`
-```
 
-### 3. Install Requirements
+3. Install Requirements
 
-```bash
 pip install -r requirements.txt
-```
 
-### 4. Configure Environment
+4. Configure Environment
 
-Choose one config (`DevelopmentConfig`, `TestingConfig`, or `ProductionConfig`) in `create_app()`:
+Choose one config (DevelopmentConfig, TestingConfig, or ProductionConfig) in create_app():
 
-```python
 app = create_app("DevelopmentConfig")
-```
 
-Ensure `.env` or system environment variables for production:
+Ensure .env or system environment variables for production:
 
-```env
 SQLALCHEMY_DATABASE_URI=<your_prod_db_uri>
 SECRET_KEY=<your_secret_key>
-```
 
-### 5. Run the Application
+5. Run the Application
 
-```bash
 flask run
-```
 
----
+📘 API Endpoints
 
-## 📘 API Endpoints
+🔑 Authentication
 
-### 🔑 Authentication
+POST /customers/login
 
-* `POST /customers/login`
-* `POST /mechanics/login`
+POST /mechanics/login
 
-### 👥 Customers
+👥 Customers
 
-* `POST /customers/`
-* `GET /customers/?page=1&per_page=10` ✅ *Paginated*
-* `PUT /customers/` *(token required)*
-* `DELETE /customers/` *(token required)*
-* `GET /customers/my-tickets` *(token required)*
+POST /customers/
 
-### 🔧 Mechanics
+GET /customers/?page=1&per_page=10 ✅ Paginated
 
-* `POST /mechanics/`
-* `GET /mechanics/`
-* `PUT /mechanics/` *(token required)*
-* `DELETE /mechanics/` *(token required)*
-* `GET /mechanics/tickets-worked`
+PUT /customers/ (token required)
 
-### 📝 Service Tickets
+DELETE /customers/ (token required)
 
-* `POST /servicetickets/`
-* `GET /servicetickets/` ❌ *Not paginated yet*
-* `PUT /servicetickets/<id>`
-* `POST /servicetickets/<id>/add-part`
+GET /customers/my-tickets (token required)
 
-### 📦 Inventory
+🔧 Mechanics
 
-* `POST /inventoryitems/`
-* `GET /inventoryitems/?page=1&per_page=10` ✅ *Paginated*
-* `PUT /inventoryitems/<id>`
-* `DELETE /inventoryitems/<id>`
+POST /mechanics/
 
----
+GET /mechanics/
 
-## 🛡️ Security
+PUT /mechanics/ (token required)
 
-* Passwords stored as plaintext (❗️Consider using hashing like `bcrypt`)
-* Role-based access enforced via `token_required` decorator
+DELETE /mechanics/ (token required)
 
----
+GET /mechanics/tickets-worked
 
-## 📈 Rate Limiting
+📝 Service Tickets
 
-* `/servicetickets/`: 10 requests per hour
-* `/customers/`: 5 GETs/hour, 3 PUTs/hour
+POST /servicetickets/
 
----
+GET /servicetickets/ ❌ Not paginated yet
 
-## 📦 Caching
+PUT /servicetickets/<id>
 
-* GET endpoints for mechanics, customers, and service tickets are cached (180s)
+POST /servicetickets/<id>/add-part
 
----
+📦 Inventory
 
-## 🔪 Testing
+POST /inventoryitems/
 
-* Full test suite included (unit and integration tests)
-* Uses `unittest` (can be swapped with `pytest` if preferred)
-* Switch to `TestingConfig` in `create_app()` during tests
-* Use SQLite in-memory for test DB
-* Run tests locally:
+GET /inventoryitems/?page=1&per_page=10 ✅ Paginated
 
-```bash
+PUT /inventoryitems/<id>
+
+DELETE /inventoryitems/<id>
+
+🛡️ Security
+
+Passwords stored as plaintext (❗️Consider using hashing like bcrypt)
+
+Role-based access enforced via token_required decorator
+
+📈 Rate Limiting
+
+/servicetickets/: 10 requests per hour
+
+/customers/: 5 GETs/hour, 3 PUTs/hour
+
+📦 Caching
+
+GET endpoints for mechanics, customers, and service tickets are cached (180s)
+
+🔪 Testing
+
+Full test suite included (unit and integration tests)
+
+Uses unittest (can be swapped with pytest if preferred)
+
+Switch to TestingConfig in create_app() during tests
+
+Use SQLite in-memory for test DB
+
+Run tests locally:
+
 python -m unittest discover -s tests -p 'test_*.py'
-```
 
----
-
-## ⚙️ CI/CD Pipeline
+⚙️ CI/CD Pipeline
 
 This project uses GitHub Actions for continuous integration and deployment.
 
-### 🔁 CI/CD Stages
+🔁 CI/CD Stages
 
-1. **Build**: Sets up Python and installs dependencies
-2. **Test**: Runs full test suite
-3. **Deploy**: Deploys to production on Render after successful tests
+Build: Sets up Python and installs dependencies
 
-### 🔐 Secrets
+Test: Runs full test suite
+
+Deploy: Deploys to production on Render after successful tests
+
+🔐 Secrets
 
 Ensure the following secrets are configured in your GitHub repository:
 
-* `RENDER_API_KEY`: Render API key
-* `SERVICE_ID`: Render service ID
+RENDER_API_KEY: Render API key
 
-### 📄 Workflow File
+SERVICE_ID: Render service ID
 
-The CI/CD pipeline is defined in \`.github/workflows/ci.yml\`, and includes:
+📄 Workflow File
 
-\- \*\*Build Stage\*\*: Creates a virtual environment, installs dependencies, and prints debug info
+The CI/CD pipeline is defined in `.github/workflows/ci.yml`, and includes:
 
-\- \*\*Test Stage\*\*: Runs the full test suite using \`unittest\`
 
-\- \*\*Deploy Stage\*\*: Deploys to \[Render]\([https://render.com](https://render.com)) using secrets
 
-The deployment uses this GitHub Action: \[\`johnbeynon/render-deploy-action\`]\([https://github.com/johnbeynon/render-deploy-action](https://github.com/johnbeynon/render-deploy-action))
+- **Build Stage**: Creates a virtual environment, installs dependencies, and prints debug info
 
----
+- **Test Stage**: Runs the full test suite using `unittest`
 
-## 🔮 Future Improvements
+- **Deploy Stage**: Deploys to [Render](https://render.com) using secrets
 
-* Password hashing with `bcrypt`
-* Dockerfile and docker-compose setup
-* Admin panel or frontend dashboard
-* Pagination and filtering on all list endpoints (e.g., service tickets)
 
----
 
-## 📄 License
+The deployment uses this GitHub Action: [`johnbeynon/render-deploy-action`](https://github.com/johnbeynon/render-deploy-action)
+
+🔮 Future Improvements
+
+Password hashing with bcrypt
+
+Dockerfile and docker-compose setup
+
+Admin panel or frontend dashboard
+
+Pagination and filtering on all list endpoints (e.g., service tickets)
+
+📄 License
 
 MIT
 
----
+📬 Contact
 
-## 📬 Contact
+For questions or contributions, contact [kenneth.brown.2404@gmail.com]
 
-For questions or contributions, contact \[[kenneth.brown.2404@gmail.com](mailto:kenneth.brown.2404@gmail.com)]
