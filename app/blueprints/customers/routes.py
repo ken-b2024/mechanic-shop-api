@@ -36,7 +36,6 @@ def login():
         return jsonify({"message": "Invalid email or password!"}), 400
 
 @customers_bp.route("/", methods=['POST'])
-@limiter.limit('3 per hour')
 def create_customer():
 
     try:

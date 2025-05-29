@@ -37,7 +37,6 @@ def login():
         return jsonify({"message": "Invalid email or password!"})
 
 @mechanics_bp.route("/", methods=['POST'])
-@limiter.limit('3 per hour')  #No more than 3 accounts should need to be made per hour
 def create_mechanic():
 
     try:
