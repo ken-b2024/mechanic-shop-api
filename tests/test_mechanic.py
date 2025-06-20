@@ -27,15 +27,13 @@ class TestMechanic(unittest.TestCase):
         self.client = self.app.test_client()
 
 
-    def test_login_mechanic(self):
+    def get_token(self):
         credentials = {
             "email": "testmechanic@email.com",
             "password": "test213"
         }
 
         response = self.client.post('/mechanics/login', json=credentials)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json['status'], 'success')
         return response.json['token']
 
 
@@ -57,13 +55,12 @@ class TestMechanic(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-
     def test_update_mechanic(self):
         update_payload = {
             'name':'David Green', 
             'salary':55000.0
         }
-        headers = {'Authorization': 'Bearer ' + self.test_login_mechanic()}
+        headers = {'Authorization': 'Bearer ' + self.get_token()}
 
         response = self.client.put('/mechanics/', json=update_payload, headers=headers)
 
@@ -74,7 +71,7 @@ class TestMechanic(unittest.TestCase):
 
 
     def test_delete_mechanic(self):
-        headers =  {'Authorization': 'Bearer ' + self.test_login_mechanic()}
+        headers =  {'Authorization': 'Bearer ' + self.get_token()}
 
         response = self.client.delete('/mechanics/', headers=headers)
 

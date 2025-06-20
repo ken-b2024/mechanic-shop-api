@@ -52,16 +52,14 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(response.json['email'], ['Missing data for required field.'])
 
 
-    def test_login_customer(self):
+    def get_token(self):
         credentials = {
             "email": "testuser@email.com",
             "password": "test321"
         }
-
         response = self.client.post('/customers/login', json=credentials)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json['status'], 'success')
         return response.json['token']
+
 
 
     def test_invalid_login(self):
@@ -76,13 +74,13 @@ class TestCustomer(unittest.TestCase):
 
 
     def test_update_customer(self):
-        udpate_payload = {
+        update_payload = {
             "VIN": "2T2HZMDA1PC123789"
         }
 
-        headers = {'Authorization': 'Bearer ' + self.test_login_customer()}
+        headers = {'Authorization': 'Bearer ' + self.get_token()}
 
-        response = self.client.put('/customers/', json=udpate_payload, headers=headers)
+        response = self.client.put('/customers/', json=update_payload, headers=headers)
 
         self.assertEqual(response.status_code, 200)
         updated_customer = response.json["Customer has been successfully updated"]
@@ -90,7 +88,7 @@ class TestCustomer(unittest.TestCase):
     
     
     def test_invalid_update(self):
-        udpate_payload = {
+        update_payload = {
             "name": "",
             "email": "",
            	"password": "",
@@ -98,9 +96,9 @@ class TestCustomer(unittest.TestCase):
             "make_model": ""
         }
 
-        headers = {'Authorization': 'Bearer ' + self.test_login_customer()}
+        headers = {'Authorization': 'Bearer ' + self.get_token()}
 
-        response = self.client.put('/customers/', json=udpate_payload, headers=headers)
+        response = self.client.put('/customers/', json=update_payload, headers=headers)
 
         self.assertEqual(response.status_code, 400)
 
@@ -114,7 +112,7 @@ class TestCustomer(unittest.TestCase):
 
 
     def test_delete_customer(self):
-        headers = {'Authorization': 'Bearer ' + self.test_login_customer()}
+        headers = {'Authorization': 'Bearer ' + self.get_token()}
 
         response = self.client.delete('/customers/', headers=headers)
 
