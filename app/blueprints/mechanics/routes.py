@@ -7,6 +7,7 @@ from sqlalchemy import select
 from.schemas import login_schema
 from app.extensions import cache, limiter
 from app.utils.utils import encode_token, token_required
+from app.extensions import bcrypt
 
 
 @mechanics_bp.route("/login", methods=['POST'])
@@ -22,7 +23,7 @@ def login():
     query = select(Mechanic).where(Mechanic.email == email)
     mechanic = db.session.execute(query).scalars().first()
 
-    if mechanic and mechanic.password == password:
+    if mechanic and bcrypt.check_password_hash(mechanic.password, password):
         token = encode_token(mechanic.id, 'mechanic')
 
         response = {
@@ -44,7 +45,8 @@ def create_mechanic():
     except ValidationError as e:
         return jsonify(e.messages), 400
     
-    new_mechanic = Mechanic(name=mechanic_data['name'], email=mechanic_data['email'], password=mechanic_data['password'], phone=mechanic_data['phone'], salary=mechanic_data['salary'])
+    hashed_pw = bcrypt.generate_password_hash(mechanic_data['password']).decode('utf-8')
+    new_mechanic = Mechanic(name=mechanic_data['name'], email=mechanic_data['email'], password=hashed_pw, phone=mechanic_data['phone'], salary=mechanic_data['salary'])
 
     db.session.add(new_mechanic)
     db.session.commit()

@@ -9,12 +9,6 @@ from app.extensions import limiter, cache
 from app.utils.utils import encode_token, token_required
 from app.extensions import bcrypt
 
-def hash_password(plain_password):
-    return bcrypt.hashpw(plain_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-
-def verify_password(plain_password, hashed_password):
-    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
-
 
 @customers_bp.route("/login", methods=['POST'])
 def login():
@@ -101,6 +95,8 @@ def update_customer(user_id, role):
         return jsonify(e.messages), 400
     
     for field, value in customer_data.items():
+        if field == 'password':
+            value = bcrypt.generate_password_hash(value).decode("utf-8")
         setattr(customer, field, value)
 
     db.session.commit()
