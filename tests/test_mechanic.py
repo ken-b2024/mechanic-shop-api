@@ -62,7 +62,7 @@ class TestMechanic(unittest.TestCase):
         update_payload = {
             'name':'David Green', 
             'email':'', 
-            'password':'', 
+            # 'password':'', 
             'phone':'', 
             'salary':55000.0
         }

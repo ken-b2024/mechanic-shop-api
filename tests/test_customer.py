@@ -17,7 +17,7 @@ class TestCustomer(unittest.TestCase):
             db.create_all()
             db.session.add(self.customer)
             db.session.commit()
-            
+
         self.token = encode_token(1,'admin')
         self.client = self.app.test_client()
 
@@ -79,7 +79,7 @@ class TestCustomer(unittest.TestCase):
         udpate_payload = {
             "name": "",
             "email": "",
-           	"password": "",
+           	# "password": "",
             "phone": "",
             "make_model": "",
             "VIN": "2T2HZMDA1PC123789"
