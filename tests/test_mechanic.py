@@ -61,9 +61,6 @@ class TestMechanic(unittest.TestCase):
     def test_update_mechanic(self):
         update_payload = {
             'name':'David Green', 
-            'email':'', 
-            # 'password':'', 
-            'phone':'', 
             'salary':55000.0
         }
         headers = {'Authorization': 'Bearer ' + self.test_login_mechanic()}

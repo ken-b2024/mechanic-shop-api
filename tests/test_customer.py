@@ -77,11 +77,6 @@ class TestCustomer(unittest.TestCase):
 
     def test_update_customer(self):
         udpate_payload = {
-            "name": "",
-            "email": "",
-           	# "password": "",
-            "phone": "",
-            "make_model": "",
             "VIN": "2T2HZMDA1PC123789"
         }
 

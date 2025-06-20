@@ -95,6 +95,8 @@ def update_customer(user_id, role):
         return jsonify(e.messages), 400
     
     for field, value in customer_data.items():
+        if value in [None, ""]:
+            continue
         if field == 'password':
             value = bcrypt.generate_password_hash(value).decode("utf-8")
         setattr(customer, field, value)
