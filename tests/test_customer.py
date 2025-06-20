@@ -93,7 +93,7 @@ class TestCustomer(unittest.TestCase):
             "email": "",
            	"password": "",
             "phone": "",
-            "make_model": ""
+            "address": ""
         }
 
         headers = {'Authorization': 'Bearer ' + self.get_token()}
