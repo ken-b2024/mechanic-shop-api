@@ -90,7 +90,7 @@ def update_customer(user_id, role):
         return jsonify({"message": "Invalid customer ID"})
     
     try:
-        customer_data = customer_schema.load(request.json)
+        customer_data = customer_schema.load(request.json, partial=True)
     except ValidationError as e:
         return jsonify(e.messages), 400
     

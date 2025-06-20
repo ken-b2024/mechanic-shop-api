@@ -73,7 +73,7 @@ def update_mechanic(user_id, role):
         return jsonify({"message": "Invalid mechanic ID"})
     
     try:
-        mechanic_data = mechanic_schema.load(request.json)
+        mechanic_data = mechanic_schema.load(request.json, partial=True)
     except ValidationError as e:
         return jsonify(e.messages), 400
     
