@@ -2,18 +2,22 @@ from app import create_app
 from app.models import db, Customer
 from app.utils.utils import encode_token
 import unittest
+from app.extensions import bcrypt
 
 
 class TestCustomer(unittest.TestCase):
 
     def setUp(self):
         self.app = create_app("TestingConfig")
-        self.customer = Customer(name='test_user', email='testuser@email.com', password='test321', phone='123-456-7890', make_model='Lexus RX 350', VIN='2T2HZMDA1PC123456')
+        hashed_pw = bcrypt.generate_password_hash('test321').decode('utf-8')
+        self.customer = Customer(name='test_user', email='testuser@email.com', password=hashed_pw, phone='123-456-7890', make_model='Lexus RX 350', VIN='2T2HZMDA1PC123456')
+
         with self.app.app_context():
             db.drop_all()
             db.create_all()
             db.session.add(self.customer)
             db.session.commit()
+            
         self.token = encode_token(1,'admin')
         self.client = self.app.test_client()
 

@@ -2,6 +2,7 @@ from app import create_app
 from app.models import db, Mechanic
 from app.utils.utils import encode_token
 import unittest
+from app.extensions import bcrypt
 
 
 class TestMechanic(unittest.TestCase):
@@ -9,10 +10,11 @@ class TestMechanic(unittest.TestCase):
 
     def setUp(self):
         self.app = create_app("TestingConfig")
+        hashed_pw = bcrypt.generate_password_hash('test213').decode('utf-8')
         self.mechanic = Mechanic(
             name='test_mechanic', 
             email='testmechanic@email.com', 
-            password='test213', 
+            password=hashed_pw, 
             phone='987-654-3210', 
             salary=50000.0
         )
