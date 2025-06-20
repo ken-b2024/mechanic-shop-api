@@ -6,6 +6,7 @@ from.blueprints.mechanics import mechanics_bp
 from.blueprints.service_tickets import service_tickets_bp
 from.blueprints.inventory import inventory_items_bp
 from flask_swagger_ui import get_swaggerui_blueprint
+from app.extensions import bcrypt
 
 
 SWAGGER_URL = '/api/docs'  
@@ -29,6 +30,7 @@ def create_app(config_name):
     ma.init_app(app)
     limiter.init_app(app)
     cache.init_app(app)
+    bcrypt.init_app(app)
 
     app.register_blueprint(customers_bp, url_prefix='/customers')
     

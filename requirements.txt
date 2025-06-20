@@ -1,4 +1,5 @@
 altgraph==0.17.4
+bcrypt==4.3.0
 blinker==1.9.0
 cachelib==0.13.0
 click==8.2.1
@@ -6,6 +7,7 @@ colorama==0.4.6
 Deprecated==1.2.18
 ecdsa==0.19.1
 Flask==3.1.1
+Flask-Bcrypt==1.0.1
 Flask-Caching==2.3.1
 Flask-Limiter==3.12
 flask-marshmallow==1.3.0
@@ -26,10 +28,12 @@ ordered-set==4.1.0
 packaging==24.2
 pefile==2023.2.7
 psycopg2==2.9.10
+pyasn1==0.6.1
 Pygments==2.19.1
 pyinstaller==6.12.0
 pyinstaller-hooks-contrib==2025.1
 PySimpleGUI==5.0.8.3
+python-dotenv==1.1.0
 python-jose==3.4.0
 pywin32-ctypes==0.2.3
 rich==13.9.4

@@ -7,6 +7,13 @@ from app.models import db
 from sqlalchemy import select
 from app.extensions import limiter, cache
 from app.utils.utils import encode_token, token_required
+from app.extensions import bcrypt
+
+def hash_password(plain_password):
+    return bcrypt.hashpw(plain_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+def verify_password(plain_password, hashed_password):
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 
 @customers_bp.route("/login", methods=['POST'])
@@ -22,7 +29,7 @@ def login():
     query = select(Customer).where(Customer.email == email)
     customer = db.session.execute(query).scalars().first()
 
-    if customer and customer.password == password:
+    if customer and bcrypt.check_password_hash(customer.password, password):
         token = encode_token(customer.id, 'customer')
 
         response = {
@@ -43,7 +50,8 @@ def create_customer():
     except ValidationError as e:
         return jsonify(e.messages), 400
     
-    new_customer = Customer(name=customer_data['name'], email=customer_data['email'], password=customer_data['password'], phone=customer_data['phone'], make_model=customer_data['make_model'], VIN=customer_data['VIN'])
+    hashed_pw = bcrypt.generate_password_hash(customer_data['password']).decode('utf-8')
+    new_customer = Customer(name=customer_data['name'], email=customer_data['email'], password=hashed_pw, phone=customer_data['phone'], make_model=customer_data['make_model'], VIN=customer_data['VIN'])
 
     db.session.add(new_customer)
     db.session.commit()
